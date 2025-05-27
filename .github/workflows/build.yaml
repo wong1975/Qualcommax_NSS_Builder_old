@@ -1,10 +1,14 @@
 name: Build OpenWrt for specific target and release
 
+permissions:
+  contents: write
+  actions: write
+
 on:
   workflow_dispatch:
   push:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 */2 * * *"
 
 env:
   REMOTE_REPOSITORY: qosmio/openwrt-ipq
@@ -75,7 +79,7 @@ jobs:
 
       - name: Setup configuration and custom files
         run: |
-          mv custom_repo/${{ env.CONFIG_FILE }} .config
+          mv builder_repo/${{ env.CONFIG_FILE }} .config
           make defconfig -j$(nproc)
           mkdir -p ${{ env.CUSTOM_FILES_PATH }}
           [ -d "builder_repo/${{ env.CUSTOM_FILES_PATH }}" ] && mv builder_repo/${{ env.CUSTOM_FILES_PATH }}* ${{ env.CUSTOM_FILES_PATH }} || true
